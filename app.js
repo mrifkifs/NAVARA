@@ -1,34 +1,32 @@
 /**
- * NAVARA ACADEMIC SOCIETY - LIVE FIREBASE CLIENT SCRIPT
- * Membaca data langsung secara Cloud dari Firestore yang diinput oleh Admin
+ * NAVARA ACADEMIC SOCIETY - LIVE FIREBASE CLIENT SCRIPT (VERSI DIRECT LOAD)
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// CONFIGURATION FIREBASE: Samakan persis dengan yang Anda isi di admin.html
+// KONFIGURASI FIREBASE ANDA
 const firebaseConfig = {
-    apiKey: "PASTE_API_KEY_ANDA_DISINI",
-    authDomain: "PROJECT_ANDA.firebaseapp.com",
-    projectId: "PROJECT_ANDA",
-    storageBucket: "PROJECT_ANDA.appspot.com",
-    messagingSenderId: "SENDER_ID_ANDA",
-    appId: "APP_ID_ANDA"
+    apiKey: "AIzaSyABpQq2OuXJeXbu2uxLaecRGL8srH01foQ",
+    authDomain: "navara-8ac77.firebaseapp.com",
+    projectId: "navara-8ac77",
+    storageBucket: "navara-8ac77.firebasestorage.app",
+    messagingSenderId: "35453814512",
+    appId: "1:35453814512:web:cb94f20d324fa0f9e36435"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-document.addEventListener("DOMContentLoaded", async () => {
-    
-    // ==========================================
-    // 1. AMBIL LIVE DATA ANGGOTA KELAS
-    // ==========================================
+// FUNGSI UTAMA PENARIKAN DATA (Dijalankan Langsung)
+async function renderWebUtama() {
+    console.log("Script app.js berjalan: Mulai menarik data dari Firebase...");
+
+    // 1. DATA ANGGOTA KELAS
     const containerAnggota = document.getElementById('anggota-container');
     if (containerAnggota) {
         try {
             let htmlAnggota = '';
-            // Ambil koleksi "anggota" diurutkan dari yang paling lama diinput atau berdasarkan kriteria Anda
             const qAnggota = query(collection(db, "anggota"), orderBy("createdAt", "asc"));
             const querySnapshot = await getDocs(qAnggota);
             
@@ -38,8 +36,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const borderStyle = mhs.isHighlighted ? 'style="border-color: var(--accent-gold);"' : '';
                 const animationDelay = index * 0.08; 
                 
+                // Class 'active' ditambahkan agar langsung muncul tanpa harus menunggu di-scroll
                 htmlAnggota += `
-                    <div class="member-card reveal-up" ${borderStyle} style="transition-delay: ${animationDelay}s;">
+                    <div class="member-card reveal-up active" ${borderStyle} style="transition-delay: ${animationDelay}s;">
                         <div class="member-name">${mhs.nama}</div>
                         <div class="member-nim">NIM: ${mhs.nim}</div>
                         <div class="badge">Active Student</div>
@@ -48,23 +47,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 index++;
             });
             
-            // Jika database kosong, tampilkan pesan informatif
-            containerAnggota.innerHTML = htmlAnggota || '<p style="color:var(--text-gray);">Belum ada data anggota. Input lewat halaman admin.</p>';
+            containerAnggota.innerHTML = htmlAnggota || '<p style="color:var(--text-gray);">Belum ada data anggota. Buka admin.html untuk menambahkan.</p>';
+            console.log("Sukses memuat data anggota.");
         } catch (err) {
             console.error("Error load anggota: ", err);
         }
     }
 
-    // ==========================================
-    // 2. AMBIL LIVE DATA JADWAL KULIAH
-    // ==========================================
+    // 2. DATA JADWAL KULIAH
     const containerJadwal = document.getElementById('jadwal-container');
     if (containerJadwal) {
         try {
             const qJadwal = query(collection(db, "jadwal"), orderBy("createdAt", "asc"));
             const querySnapshot = await getDocs(qJadwal);
             
-            // Kelompokkan data flat dari Firestore ke dalam Array Hari struktur aslinya
             const hariMap = { "Senin": [], "Selasa": [], "Rabu": [], "Kamis": [], "Jumat": [] };
             
             querySnapshot.forEach((doc) => {
@@ -77,12 +73,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             let htmlJadwal = '';
             let dayIndex = 0;
 
-            // Render loop berurutan berdasarkan hari Senin - Jumat
             const urutanHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
             urutanHari.forEach((hari) => {
                 const listMatkul = hariMap[hari];
-                
-                // Lewati atau tampilkan kotak kosong jika hari tersebut tidak ada kuliah
                 if (listMatkul.length === 0) return;
 
                 let matkulHtml = '';
@@ -98,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const dayDelay = dayIndex * 0.12;
                 htmlJadwal += `
-                    <div class="day-card reveal-up" style="transition-delay: ${dayDelay}s;">
+                    <div class="day-card reveal-up active" style="transition-delay: ${dayDelay}s;">
                         <div class="day-header">
                             <span>${hari}</span>
                             <i class="fa-regular fa-clock" style="color: var(--accent-gold); font-size: 1.1rem;"></i>
@@ -109,10 +102,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
 
-                // SISIPAN KARTU GAMBAR KAMPUS UNIVERSITAS 'AISYIYAH BANDUNG (Sesuai Layout di sebelah Hari Rabu)
                 if (hari === "Rabu") {
                     htmlJadwal += `
-                        <div class="schedule-image-card reveal-up" style="transition-delay: ${(dayIndex + 1) * 0.12}s;">
+                        <div class="schedule-image-card reveal-up active" style="transition-delay: ${(dayIndex + 1) * 0.12}s;">
                             <h4>Pursue Excellence.</h4>
                             <p>NAVARA SOCIETY</p>
                         </div>
@@ -121,19 +113,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dayIndex++;
             });
 
-            containerJadwal.innerHTML = htmlJadwal || '<p style="color:var(--text-gray);">Belum ada jadwal kuliah.</p>';
+            containerJadwal.innerHTML = htmlJadwal || '<p style="color:var(--text-gray);">Belum ada jadwal kuliah. Buka admin.html untuk menambahkan.</p>';
+            console.log("Sukses memuat data jadwal.");
 
         } catch (err) {
             console.error("Error load jadwal: ", err);
         }
     }
 
-    // Memicu ulang sistem pengawasan scroll agar animasi muncul mulus bekerja untuk elemen dari Firebase
+    // Tetap panggil observer untuk animasi scroll bagian profil & filosofi
     initScrollObserver();
-});
+}
+
+// LANGSUNG PANGGIL FUNGSI TANPA MENUNGGU DOMContentLoaded
+renderWebUtama();
 
 function initScrollObserver() {
-    const hiddenElements = document.querySelectorAll('.reveal-up, .reveal-fade');
+    const hiddenElements = document.querySelectorAll('.reveal-up:not(.active), .reveal-fade:not(.active)');
     const observerOptions = { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0.10 };
     const scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
