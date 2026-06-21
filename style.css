@@ -114,14 +114,28 @@ nav {
     margin-bottom: 45px;
 }
 
-.big-logo-svg {
-    filter: drop-shadow(0 0 25px rgba(var(--accent-gold-rgb), 0.35));
-    animation: logoGlow 4s ease-in-out infinite alternate;
+.big-logo-svg { 
+    filter: drop-shadow(0 0 25px rgba(var(--accent-gold-rgb), 0.35)); 
+    /* Waktu putaran dipercepat sedikit menjadi 10 detik agar efek 3D-nya lebih terasa */
+    animation: logoGlow 4s ease-in-out infinite alternate, logoSpin 10s linear infinite; 
+    transform-style: preserve-3d;
 }
 
-@keyframes logoGlow {
-    0% { filter: drop-shadow(0 0 15px rgba(var(--accent-gold-rgb), 0.25)); }
-    100% { filter: drop-shadow(0 0 35px rgba(var(--accent-gold-rgb), 0.55)); }
+/* Efek putaran 3D membalik dari belakang ke depan (Efek Koin Emas) */
+@keyframes logoSpin {
+    0% { transform: perspective(1000px) rotateY(0deg); }
+    100% { transform: perspective(1000px) rotateY(360deg); }
+}
+
+@keyframes logoGlow { 
+    0% { filter: drop-shadow(0 0 15px rgba(var(--accent-gold-rgb), 0.25)); } 
+    100% { filter: drop-shadow(0 0 35px rgba(var(--accent-gold-rgb), 0.55)); } 
+}
+
+/* Keyframe baru untuk memutar logo 360 derajat */
+@keyframes logoSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .btn-primary {
@@ -310,18 +324,28 @@ nav {
     margin-top: 50px;
 }
 
-.member-card {
-    background-color: var(--bg-card);
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+.member-card { 
+    background-color: var(--bg-card); 
+    padding: 30px; 
+    border-radius: 12px; 
+    border: 1px solid rgba(255, 255, 255, 0.03); 
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+    cursor: pointer; /* Mengubah ikon mouse menjadi tanda klik */
 }
 
-.member-card:hover {
-    border-color: rgba(var(--accent-gold-rgb), 0.5);
-    transform: translateY(-6px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+/* Efek saat mouse diarahkan (Naik, membesar sedikit, & bercahaya) */
+.member-card:hover { 
+    border-color: var(--accent-gold); 
+    transform: translateY(-8px) scale(1.02); 
+    box-shadow: 0 15px 35px rgba(199, 165, 66, 0.15); 
+    background-color: #1a1a1d; 
+}
+
+/* Efek taktil saat kartu diklik (Tertekan ke bawah) */
+.member-card:active {
+    transform: translateY(-2px) scale(0.98);
+    box-shadow: 0 5px 15px rgba(199, 165, 66, 0.2);
+    transition: all 0.1s; /* Transisi sangat cepat untuk kesan responsif */
 }
 
 .member-name {
@@ -394,11 +418,27 @@ nav {
     gap: 15px;
 }
 
-.subject-card {
-    background-color: var(--bg-card);
-    padding: 20px;
-    border-radius: 10px;
+.subject-card { 
+    background-color: var(--bg-card); 
+    padding: 20px; 
+    border-radius: 10px; 
     border: 1px solid rgba(255, 255, 255, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+}
+
+/* Efek saat mouse diarahkan ke daftar mata kuliah */
+.subject-card:hover {
+    border-color: rgba(199, 165, 66, 0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(199, 165, 66, 0.1);
+    background-color: #1a1a1d;
+}
+
+/* Efek saat diklik */
+.subject-card:active {
+    transform: translateY(0) scale(0.98);
+    transition: all 0.1s;
 }
 
 .time {
