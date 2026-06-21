@@ -1,11 +1,10 @@
 /**
- * NAVARA ACADEMIC SOCIETY - LIVE FIREBASE CLIENT SCRIPT (VERSI DIRECT LOAD)
+ * NAVARA ACADEMIC SOCIETY - LIVE FIREBASE CLIENT SCRIPT (VERSI DIREKTORI PREMIUM)
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// KONFIGURASI FIREBASE ANDA
 const firebaseConfig = {
     apiKey: "AIzaSyABpQq2OuXJeXbu2uxLaecRGL8srH01foQ",
     authDomain: "navara-8ac77.firebaseapp.com",
@@ -18,11 +17,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// FUNGSI UTAMA PENARIKAN DATA (Dijalankan Langsung)
 async function renderWebUtama() {
-    console.log("Script app.js berjalan: Mulai menarik data dari Firebase...");
+    console.log("Script app.js berjalan: Menghubungkan direktori data...");
 
-    // 1. DATA ANGGOTA KELAS
+    // 1. DATA ANGGOTA KELAS + CEK SOSMED & FOTO OPSIONAL
     const containerAnggota = document.getElementById('anggota-container');
     if (containerAnggota) {
         try {
@@ -36,22 +34,42 @@ async function renderWebUtama() {
                 const borderStyle = mhs.isHighlighted ? 'style="border-color: var(--accent-gold);"' : '';
                 const animationDelay = index * 0.08; 
                 
-                // Class 'active' ditambahkan agar langsung muncul tanpa harus menunggu di-scroll
+                // Logika Pemrosesan Media Sosial Opsional
+                const igHtml = mhs.instagram ? `<a href="https://instagram.com/${mhs.instagram.replace('@','')}" target="_blank" class="member-social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>` : '';
+                
+                let waFinalLink = mhs.whatsapp;
+                if (waFinalLink && !waFinalLink.startsWith('http')) {
+                    if (waFinalLink.startsWith('0')) waFinalLink = '62' + waFinalLink.slice(1);
+                    waFinalLink = `https://wa.me/${waFinalLink}`;
+                }
+                const waHtml = mhs.whatsapp ? `<a href="${waFinalLink}" target="_blank" class="member-social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>` : '';
+                
+                const linkedinHtml = mhs.linkedin ? `<a href="${mhs.linkedin}" target="_blank" class="member-social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>` : '';
+                
+                // Logika Pemrosesan Foto Profil Opsional (Menggunakan UI-Avatars premium jika kosong)
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(mhs.nama)}&background=1c1c1c&color=c7a542&bold=true&size=128`;
+                const fotoFinal = mhs.fotoUrl || defaultAvatar;
+
                 htmlAnggota += `
                     <div class="member-card reveal-up active" ${borderStyle} style="transition-delay: ${animationDelay}s;">
-                        <div class="member-name">${mhs.nama}</div>
-                        <div class="member-nim">NIM: ${mhs.nim}</div>
-                        <div class="badge">Active Student</div>
+                        <div class="member-avatar-box">
+                            <img src="${fotoFinal}" alt="Foto ${mhs.nama}" onerror="this.src='${defaultAvatar}'" class="member-avatar-img">
+                        </div>
+                        <div class="member-detail-box">
+                            <div class="member-name">${mhs.nama}</div>
+                            <div class="member-nim">NIM: ${mhs.nim}</div>
+                            <div class="badge">Active Student</div>
+                            <div class="member-card-socials">
+                                ${igHtml} ${waHtml} ${linkedinHtml}
+                            </div>
+                        </div>
                     </div>
                 `;
                 index++;
             });
             
-            containerAnggota.innerHTML = htmlAnggota || '<p style="color:var(--text-gray);">Belum ada data anggota. Buka admin.html untuk menambahkan.</p>';
-            console.log("Sukses memuat data anggota.");
-        } catch (err) {
-            console.error("Error load anggota: ", err);
-        }
+            containerAnggota.innerHTML = htmlAnggota || '<p style="color:var(--text-gray);">Belum ada data anggota.</p>';
+        } catch (err) { console.error("Error load anggota: ", err); }
     }
 
     // 2. DATA JADWAL KULIAH
@@ -60,20 +78,17 @@ async function renderWebUtama() {
         try {
             const qJadwal = query(collection(db, "jadwal"), orderBy("createdAt", "asc"));
             const querySnapshot = await getDocs(qJadwal);
-            
             const hariMap = { "Senin": [], "Selasa": [], "Rabu": [], "Kamis": [], "Jumat": [] };
             
             querySnapshot.forEach((doc) => {
                 const item = doc.data();
-                if(hariMap[item.hari]) {
-                    hariMap[item.hari].push(item);
-                }
+                if(hariMap[item.hari]) hariMap[item.hari].push(item);
             });
 
             let htmlJadwal = '';
             let dayIndex = 0;
-
             const urutanHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
+            
             urutanHari.forEach((hari) => {
                 const listMatkul = hariMap[hari];
                 if (listMatkul.length === 0) return;
@@ -113,19 +128,13 @@ async function renderWebUtama() {
                 dayIndex++;
             });
 
-            containerJadwal.innerHTML = htmlJadwal || '<p style="color:var(--text-gray);">Belum ada jadwal kuliah. Buka admin.html untuk menambahkan.</p>';
-            console.log("Sukses memuat data jadwal.");
-
-        } catch (err) {
-            console.error("Error load jadwal: ", err);
-        }
+            containerJadwal.innerHTML = htmlJadwal || '<p style="color:var(--text-gray);">Belum ada jadwal kuliah.</p>';
+        } catch (err) { console.error("Error load jadwal: ", err); }
     }
 
-    // Tetap panggil observer untuk animasi scroll bagian profil & filosofi
     initScrollObserver();
 }
 
-// LANGSUNG PANGGIL FUNGSI TANPA MENUNGGU DOMContentLoaded
 renderWebUtama();
 
 function initScrollObserver() {

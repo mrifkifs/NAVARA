@@ -31,7 +31,7 @@
         input[type="checkbox"] { accent-color: var(--accent-gold); width: 16px; height: 16px; }
         button { width: 100%; padding: 12px; background-color: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
         button:hover { background-color: var(--accent-gold); color: var(--bg-main); }
-        .data-table-container { max-height: 400px; overflow-y: auto; margin-top: 15px; border-radius: 8px; }
+        .data-table-container { max-height: 500px; overflow-y: auto; margin-top: 15px; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
         th, td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         th { background-color: #0c0c0d; color: var(--text-gray); font-weight: 600; position: sticky; top: 0; }
@@ -54,8 +54,16 @@
                 <div class="admin-card">
                     <h2><i class="fa-solid fa-user-plus"></i> Tambah Anggota</h2>
                     <form id="form-anggota">
-                        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="ang-nama" placeholder="CONTOH: GINA AGUSTINA" required></div>
-                        <div class="form-group"><label>NIM</label><input type="text" id="ang-nim" placeholder="CONTOH: 300225008" required></div>
+                        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="ang-nama" placeholder="CONTOH: GINA AGUSTINA" required></div>
+                        <div class="form-group"><label>NIM *</label><input type="text" id="ang-nim" placeholder="CONTOH: 300225008" required></div>
+                        
+                        <div class="form-group"><label>Username Instagram (Opsional)</label><input type="text" id="ang-ig" placeholder="Contoh: gina_agstn (Tanpa tanda @)"></div>
+                        <div class="form-group"><label>Nomor WhatsApp (Opsional)</label><input type="text" id="ang-wa" placeholder="Contoh: 08123456789"></div>
+                        <div class="form-group"><label>Link Profil LinkedIn (Opsional)</label><input type="text" id="ang-linkedin" placeholder="Contoh: https://linkedin.com/in/username"></div>
+                        <div class="form-group">
+                         <label>Foto Profil (Upload File)</label>
+                         <input type="file" id="ang-foto-upload" accept="image/*" style="width: 100%; padding: 10px; background: #0c0c0d; border: 1px solid #333; color: white; border-radius: 8px;">
+                </div>                        
                         <div class="checkbox-group"><input type="checkbox" id="ang-highlight"><label for="ang-highlight" style="margin:0; cursor:pointer;">Aktifkan Border Emas (Highlight Spesifik)</label></div>
                         <button type="submit">Simpan Anggota</button>
                     </form>
@@ -103,8 +111,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        const storage = getStorage(app);
 
-        // KONFIGURASI FIREBASE ANDA
         const firebaseConfig = {
             apiKey: "AIzaSyABpQq2OuXJeXbu2uxLaecRGL8srH01foQ",
             authDomain: "navara-8ac77.firebaseapp.com",
@@ -119,37 +128,78 @@
 
         // CRUD ANGGOTA
         const formAnggota = document.getElementById('form-anggota');
-        formAnggota.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                await addDoc(collection(db, "anggota"), {
-                    nama: document.getElementById('ang-nama').value.toUpperCase(),
-                    nim: document.getElementById('ang-nim').value,
-                    isHighlighted: document.getElementById('ang-highlight').checked,
-                    createdAt: Date.now()
-                });
-                formAnggota.reset();
-                loadAnggota();
-            } catch (error) { alert("Gagal menyimpan data: " + error); }
-        });
+       import { updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"; // Tambahkan ini di import
 
-        async function loadAnggota() {
-            const tbody = document.getElementById('list-anggota');
-            tbody.innerHTML = '';
-            const q = query(collection(db, "anggota"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((res) => {
-                const data = res.data();
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${data.nama} ${data.isHighlighted ? '<span class="highlight-tag">Gold</span>' : ''}</td>
-                    <td>${data.nim}</td>
-                    <td style="text-align:center;"><button class="btn-delete" data-id="${res.id}"><i class="fa-solid fa-trash-can"></i></button></td>
-                `;
-                tbody.appendChild(row);
-            });
-            attachDeleteEvents();
-        }
+formAnggota.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btnSubmit = formAnggota.querySelector('button');
+    const editId = btnSubmit.getAttribute('data-editing-id');
+    
+    // (Proses upload foto seperti kode sebelumnya tetap sama)
+    
+    if (editId) {
+        // Mode Update
+        await updateDoc(doc(db, "anggota", editId), {
+            nama: document.getElementById('ang-nama').value.toUpperCase(),
+            nim: document.getElementById('ang-nim').value,
+            instagram: document.getElementById('ang-ig').value,
+            whatsapp: document.getElementById('ang-wa').value,
+            linkedin: document.getElementById('ang-linkedin').value
+        });
+        alert("Data berhasil diupdate!");
+        btnSubmit.innerText = "Simpan Anggota";
+        btnSubmit.removeAttribute('data-editing-id');
+    } else {
+        // Mode Simpan Baru (seperti kode sebelumnya)
+        // ... (kode addDoc Anda)
+    }
+    formAnggota.reset();
+    loadAnggota();
+});
+        // ... (di dalam <script type="module">)
+
+async function loadAnggota() {
+    const tbody = document.getElementById('list-anggota');
+    tbody.innerHTML = '';
+    const q = query(collection(db, "anggota"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    
+    querySnapshot.forEach((res) => {
+        const data = res.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${data.nama}</td>
+            <td style="text-align:center;">
+                <button class="btn-edit" data-id="${res.id}" style="margin-right:10px; color:var(--accent-gold); border:none; background:none; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button class="btn-delete" data-id="${res.id}" style="color:var(--text-gray); border:none; background:none; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Tambahkan event untuk tombol Edit
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.onclick = async (e) => {
+            const id = btn.getAttribute('data-id');
+            const docRef = doc(db, "anggota", id);
+            const docSnap = await getDocs(query(collection(db, "anggota"))); // Cara sederhana ambil data
+            
+            // Logika isi form
+            const data = docSnap.docs.find(d => d.id === id).data();
+            document.getElementById('ang-nama').value = data.nama;
+            document.getElementById('ang-nim').value = data.nim;
+            document.getElementById('ang-ig').value = data.instagram || '';
+            document.getElementById('ang-wa').value = data.whatsapp || '';
+            document.getElementById('ang-linkedin').value = data.linkedin || '';
+            
+            // Ubah tombol submit menjadi Update
+            const btnSubmit = formAnggota.querySelector('button');
+            btnSubmit.innerText = "Update Anggota";
+            btnSubmit.setAttribute('data-editing-id', id);
+        };
+    });
+    attachDeleteEvents();
+}
 
         // CRUD JADWAL
         const formJadwal = document.getElementById('form-jadwal');

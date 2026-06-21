@@ -116,15 +116,6 @@ nav {
 
 .big-logo-svg { 
     filter: drop-shadow(0 0 25px rgba(var(--accent-gold-rgb), 0.35)); 
-    /* Waktu putaran dipercepat sedikit menjadi 10 detik agar efek 3D-nya lebih terasa */
-    animation: logoGlow 4s ease-in-out infinite alternate, logoSpin 10s linear infinite; 
-    transform-style: preserve-3d;
-}
-
-/* Efek putaran 3D membalik dari belakang ke depan (Efek Koin Emas) */
-@keyframes logoSpin {
-    0% { transform: perspective(1000px) rotateY(0deg); }
-    100% { transform: perspective(1000px) rotateY(360deg); }
 }
 
 @keyframes logoGlow { 
@@ -282,10 +273,11 @@ nav {
     margin-bottom: 12px;
 }
 
-.filosofi-grid p {
-    font-size: 0.95rem;
-    color: var(--text-gray);
-    padding: 0 10px;
+.filosofi-grid p { 
+    font-size: 0.95rem; 
+    color: var(--text-gray); 
+    padding: 0; /* Menghilangkan jarak yang membuatnya menjorok */
+    text-align: justify; /* Membuat teks rata kiri-kanan super rapi seperti di Word */
 }
 
 /* Motto Banner Strip */
@@ -311,68 +303,114 @@ nav {
 }
 
 /* ==========================================================================
-   SECTION ANGGOTA KELAS
+   GAYA KARTU ANGGOTA DENGAN FOTO DAN SOSMED BARU
    ========================================================================== */
-#anggota {
-    background-color: #09090a;
+.anggota-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+    gap: 25px; /* Jarak antar kolom dan baris */
+    margin-top: 50px; 
 }
 
-.anggota-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-    margin-top: 50px;
-}
-
-.member-card { 
+   .member-card { 
     background-color: var(--bg-card); 
-    padding: 30px; 
+    padding: 25px; 
     border-radius: 12px; 
     border: 1px solid rgba(255, 255, 255, 0.03); 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-    cursor: pointer; /* Mengubah ikon mouse menjadi tanda klik */
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    gap: 20px;
+
+    /* INI KODE TAMBAHANNYA UNTUK MEMBERIKAN JARAK BAWAH */
+    margin-bottom: 25px; 
 }
 
-/* Efek saat mouse diarahkan (Naik, membesar sedikit, & bercahaya) */
+.member-avatar-box {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%; /* Membuat foto melingkar sempurna */
+    overflow: hidden;
+    border: 2px solid rgba(199, 165, 66, 0.15);
+    flex-shrink: 0; /* Mencegah foto menciut */
+    background-color: #0c0c0d;
+}
+
+.member-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Memotong gambar secara proporsional di tengah lingkaran */
+    display: block;
+}
+
+.member-detail-box {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.member-name { 
+    font-weight: 700; 
+    font-size: 1.1rem; 
+    letter-spacing: -0.3px; 
+    margin-bottom: 4px; 
+    color: var(--text-white); 
+    line-height: 1.3;
+}
+
+.member-nim { 
+    color: var(--accent-gold); 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    margin-bottom: 12px; 
+    letter-spacing: 0.5px; 
+}
+
+/* Kontainer Lingkaran Sosmed Kecil */
+.member-card-socials {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.member-social-icon {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.member-social-icon:hover {
+    color: var(--accent-gold);
+    background-color: rgba(199, 165, 66, 0.1);
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+}
+
+/* Efek Sorot dan Tekan Premium */
 .member-card:hover { 
     border-color: var(--accent-gold); 
-    transform: translateY(-8px) scale(1.02); 
-    box-shadow: 0 15px 35px rgba(199, 165, 66, 0.15); 
-    background-color: #1a1a1d; 
+    transform: translateY(-6px); 
+    box-shadow: 0 15px 30px rgba(199, 165, 66, 0.12); 
+    background-color: #19191b;
 }
 
-/* Efek taktil saat kartu diklik (Tertekan ke bawah) */
+.member-card:hover .member-avatar-box {
+    border-color: var(--accent-gold);
+}
+
 .member-card:active {
-    transform: translateY(-2px) scale(0.98);
-    box-shadow: 0 5px 15px rgba(199, 165, 66, 0.2);
-    transition: all 0.1s; /* Transisi sangat cepat untuk kesan responsif */
-}
-
-.member-name {
-    font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: -0.3px;
-    margin-bottom: 6px;
-    color: var(--text-white);
-}
-
-.member-nim {
-    color: var(--accent-gold);
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 25px;
-    letter-spacing: 0.5px;
-}
-
-.badge {
-    display: inline-block;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
-    color: var(--accent-gold);
-    background-color: rgba(var(--accent-gold-rgb), 0.03);
+    transform: translateY(-2px) scale(0.99);
+    transition: all 0.1s;
 }
 
 /* ==========================================================================
