@@ -13,33 +13,33 @@
 <body>
 
     <nav id="navbar">
-    <div class="nav-container">
-        <div class="logo">
-            <a href="#dashboard" class="logo-link" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                <img src="navara_20260621_132708_0000.png" alt="NAVARA Logo" height="30" style="border-radius: 4px;">
-                <span style="color: #ffffff; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;">NAVARA</span>
-            </a>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="#dashboard" class="logo-link" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    <img src="navara_20260621_132708_0000.png" alt="NAVARA Logo" height="35" style="border-radius: 4px; display: block;">
+                    <span style="color: #ffffff; font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; line-height: 1;">NAVARA</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#profil" class="nav-item">Beranda</a></li>
+                <li><a href="#anggota" class="nav-item">Anggota Kelas</a></li>
+                <li><a href="#jadwal" class="nav-item">Jadwal Kuliah</a></li>
+            </ul>
         </div>
-        <ul class="nav-links">
-            <li><a href="#profil" class="nav-item">Beranda</a></li>
-            <li><a href="#anggota" class="nav-item">Anggota Kelas</a></li>
-            <li><a href="#jadwal" class="nav-item">Jadwal Kuliah</a></li>
-        </ul>
-    </div>
-</nav>
+    </nav>
 
     <header id="dashboard">
-    <div class="hero-content">
-        <div class="big-logo-container">
-            <img src="navara_20260621_132708_0000.png" alt="NAVARA Big Logo" width="180" class="big-logo-svg" style="border-radius: 10px;">
+        <div class="hero-content">
+            <div class="big-logo-container">
+                <img src="navara_20260621_132708_0000.png" alt="NAVARA Big Logo" width="180" class="big-logo-svg" style="border-radius: 10px;">
+            </div>
+            <div class="btn-container">
+                <a href="#profil" class="btn-primary">
+                    <i class="fa-solid fa-users-gear"></i> Profil Kelas
+                </a>
+            </div>
         </div>
-        <div class="btn-container">
-            <a href="#profil" class="btn-primary">
-                <i class="fa-solid fa-users-gear"></i> Profil Kelas
-            </a>
-        </div>
-    </div>
-</header>
+    </header>
 
     <section id="profil" class="section-padding">
         <div class="container">
@@ -124,19 +124,20 @@
     </section>
 
     <footer>
-    <div class="footer-container">
-        <div class="footer-brand">
-            <img src="navara_20260621_132708_0000.png" alt="NAVARA Logo" height="30" style="border-radius: 4px;">
+        <div class="footer-container">
+            <div class="footer-brand" style="display: flex; align-items: center;">
+                <img src="navara_20260621_132708_0000.png" alt="NAVARA Logo" style="height: 26px; margin-right: 12px; display: block;">
+                <span style="color: #ffffff; font-weight: 700; font-size: 1rem; letter-spacing: 1px; margin: 0; padding: 0; display: inline-flex; align-items: center; height: 26px;">NAVARA</span>
+            </div>
+            <p class="copyright-text" style="margin: 0; text-align: center;">&copy; 2026 NAVARA Academic Society. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://youtube.com" target="_blank" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
         </div>
-        <p class="copyright-text" style="margin: 0; text-align: center;">&copy; 2026 NAVARA Academic Society. All Rights Reserved.</p>
-        <div class="social-links">
-            <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-            <a href="https://youtube.com" target="_blank" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
