@@ -1,0 +1,539 @@
+/* ==========================================================================
+   VARS & BASE CONFIGURATION
+   ========================================================================== */
+:root {
+    --bg-main: #0c0c0d;
+    --bg-card: #151517;
+    --bg-navbar: rgba(12, 12, 13, 0.85);
+    --accent-gold: #c7a542;
+    --accent-gold-rgb: 199, 165, 66;
+    --text-white: #ffffff;
+    --text-gray: #8e8e93;
+    --font-main: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-white);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Utilities Layout */
+h1, h2, h3, h4, h5, h6 { color: var(--text-white); font-weight: 700; }
+.text-center { text-align: center; }
+.gold-text { color: var(--accent-gold); }
+.yellow-icon { color: var(--accent-gold); margin-right: 8px; }
+.sub-text { color: var(--text-gray); font-size: 1rem; margin-top: 0.5rem; max-width: 600px; }
+.filosofi-section .sub-text { margin: 0.5rem auto 0 auto; }
+.line-accent { width: 65px; height: 3.5px; background-color: var(--accent-gold); margin: 20px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
+.section-padding { padding: 120px 0; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+/* ==========================================================================
+   NAVIGATION BAR STYLING
+   ========================================================================== */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: var(--bg-navbar);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 25px;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo-svg {
+    display: block;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 35px;
+}
+
+.nav-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+    padding: 5px 0;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent-gold);
+}
+
+/* ==========================================================================
+   HERO / SPLASH DASHBOARD STYLING
+   ========================================================================== */
+#dashboard {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #09090a;
+    position: relative;
+}
+
+.hero-content {
+    z-index: 2;
+}
+
+.big-logo-container {
+    margin-bottom: 45px;
+}
+
+.big-logo-svg {
+    filter: drop-shadow(0 0 25px rgba(var(--accent-gold-rgb), 0.35));
+    animation: logoGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+    0% { filter: drop-shadow(0 0 15px rgba(var(--accent-gold-rgb), 0.25)); }
+    100% { filter: drop-shadow(0 0 35px rgba(var(--accent-gold-rgb), 0.55)); }
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    border-radius: 30px;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    background: transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-gold);
+    color: var(--bg-main);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(var(--accent-gold-rgb), 0.15);
+}
+
+/* ==========================================================================
+   SECTION BERANDA: PROFIL & FILOSOFI
+   ========================================================================== */
+.profil-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+}
+
+.profil-text h2 {
+    font-size: 2.8rem;
+    letter-spacing: -0.5px;
+}
+
+.profil-text p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-align: justify;
+}
+
+.image-wrapper {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Visi Misi Card */
+.visi-misi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 120px;
+}
+
+.card {
+    background-color: var(--bg-card);
+    padding: 45px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    letter-spacing: -0.3px;
+}
+
+.quote {
+    color: var(--accent-gold);
+    font-style: italic;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.7;
+}
+
+.misi-list {
+    list-style: none;
+    counter-reset: custom-counter;
+}
+
+.misi-list li {
+    counter-increment: custom-counter;
+    margin-bottom: 18px;
+    position: relative;
+    padding-left: 45px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem;
+}
+
+.misi-list li::before {
+    content: "0" counter(custom-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent-gold);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+/* Filosofi Items */
+.filosofi-section {
+    margin-bottom: 60px;
+}
+
+.filosofi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.icon-box {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 25px;
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: var(--accent-gold);
+    border: 1px solid rgba(var(--accent-gold-rgb), 0.15);
+}
+
+.filosofi-grid h4 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+}
+
+.filosofi-grid p {
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    padding: 0 10px;
+}
+
+/* Motto Banner Strip */
+.motto-section {
+    text-align: center;
+    margin-top: 140px;
+    padding: 40px 0;
+}
+
+.motto-section h5 {
+    color: var(--accent-gold);
+    letter-spacing: 5px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.motto-section h2 {
+    font-size: 3rem;
+    color: var(--text-gray);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* ==========================================================================
+   SECTION ANGGOTA KELAS
+   ========================================================================== */
+#anggota {
+    background-color: #09090a;
+}
+
+.anggota-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    margin-top: 50px;
+}
+
+.member-card {
+    background-color: var(--bg-card);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.member-card:hover {
+    border-color: rgba(var(--accent-gold-rgb), 0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.member-name {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-white);
+}
+
+.member-nim {
+    color: var(--accent-gold);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+    color: var(--accent-gold);
+    background-color: rgba(var(--accent-gold-rgb), 0.03);
+}
+
+/* ==========================================================================
+   SECTION JADWAL KULIAH
+   ========================================================================== */
+.semester-badge {
+    color: var(--accent-gold);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+.jadwal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.day-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 30px;
+    border-radius: 14px;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    border-left: 3px solid var(--accent-gold);
+    padding-left: 12px;
+}
+
+.subject-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.subject-card {
+    background-color: var(--bg-card);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.time {
+    color: var(--accent-gold);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.subject-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+}
+
+.room {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Gambar Artistik di Hari Rabu */
+.schedule-image-card {
+    /* Mengganti link gambar lama dengan kampus.jpg */
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(12, 12, 13, 0.95)), 
+                url('WhatsApp\ Image\ 2026-06-21\ at\ 13.44.03.jpeg') center/cover no-repeat;
+    border-radius: 14px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    min-height: 250px;
+}
+
+.schedule-image-card h4 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.schedule-image-card p {
+    color: var(--accent-gold);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+/* ==========================================================================
+   FOOTER SECTION STYLING
+   ========================================================================== */
+footer {
+    padding: 40px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    background-color: #09090a;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.copyright-text {
+    color: var(--text-gray);
+    font-size: 0.88rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+}
+
+.social-links a {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--accent-gold);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN SYSTEM (MOBILE OPTIMIZED)
+   ========================================================================== */
+@media (max-width: 992px) {
+    .profil-grid { grid-template-columns: 1fr; gap: 40px; }
+    .visi-misi-grid, .jadwal-grid { grid-template-columns: 1fr; }
+    .filosofi-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+
+@media (max-width: 768px) {
+    .section-padding { padding: 80px 0; }
+    .nav-links { display: none; } /* Mobile Menu Trigger bisa dipasang di sini */
+    .filosofi-grid { grid-template-columns: 1fr; gap: 35px; }
+    .motto-section h2 { font-size: 2rem; }
+    .footer-container { flex-direction: column; gap: 20px; text-align: center; }
+    .profil-text h2 { font-size: 2.2rem; }
+}
+
+/* ==========================================================================
+   PREMIUM DRAMATIC SCROLL ANIMATION
+   ========================================================================== */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(55px);
+    transition: opacity 0.9s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 0.9s cubic-bezier(0.215, 0.61, 0.355, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-fade {
+    opacity: 0;
+    transition: opacity 1.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    will-change: opacity;
+}
+
+.reveal-up.active, 
+.reveal-fade.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-content {
+    animation: heroEnter 1.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+@keyframes heroEnter {
+    0% { opacity: 0; transform: scale(0.96) translateY(25px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
