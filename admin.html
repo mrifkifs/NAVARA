@@ -10,99 +10,157 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --bg-main: #0c0c0d; --bg-card: #151517; --accent-gold: #c7a542; --accent-red: #da4444; --text-white: #ffffff; --text-gray: #8e8e93; }
+        :root { 
+            --bg-main: #0c0c0d; 
+            --bg-card: #151517; 
+            --accent-gold: #c7a542; 
+            --accent-red: #da4444; 
+            --text-white: #ffffff; 
+            --text-gray: #8e8e93; 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-white); padding: 40px 20px; }
         .container { max-width: 1100px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
-        h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
-        h1 span { color: var(--accent-gold); }
-        .back-btn { color: var(--text-gray); text-decoration: none; font-size: 0.95rem; transition: 0.3s; }
+        
+        header { margin-bottom: 40px; border-bottom: 1px solid #222; padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        header h1 span { color: var(--accent-gold); }
+        .back-btn { color: var(--text-gray); text-decoration: none; font-size: 14px; transition: 0.3s; }
         .back-btn:hover { color: var(--accent-gold); }
-        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
-        .admin-card { background-color: var(--bg-card); padding: 30px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.03); margin-bottom: 30px; }
-        h2 { font-size: 1.3rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-gold); padding-left: 10px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.85rem; color: var(--text-gray); margin-bottom: 6px; font-weight: 500; }
-        input[type="text"], select { width: 100%; padding: 12px; background-color: #0c0c0d; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: white; font-size: 0.95rem; transition: 0.3s; }
-        input[type="text"]:focus, select:focus { border-color: var(--accent-gold); outline: none; }
-        .checkbox-group { display: flex; align-items: center; gap: 8px; margin: 15px 0; }
-        input[type="checkbox"] { accent-color: var(--accent-gold); width: 16px; height: 16px; }
-        button { width: 100%; padding: 12px; background-color: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
-        button:hover { background-color: var(--accent-gold); color: var(--bg-main); }
-        .data-table-container { max-height: 500px; overflow-y: auto; margin-top: 15px; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-        th, td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        th { background-color: #0c0c0d; color: var(--text-gray); font-weight: 600; position: sticky; top: 0; }
-        td { color: rgba(255,255,255,0.9); }
-        .btn-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; transition: 0.3s; font-size: 1rem; }
-        .btn-delete:hover { color: var(--accent-red); }
-        .highlight-tag { background-color: rgba(199, 165, 66, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        
+        .card { background-color: var(--bg-card); padding: 25px; border-radius: 8px; border: 1px solid #222; }
+        .card h2 { font-size: 18px; margin-bottom: 20px; color: var(--accent-gold); display: flex; align-items: center; gap: 10px; }
+        
+        form { display: flex; flex-direction: column; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        input, select { background-color: #0c0c0d; border: 1px solid #333; padding: 12px; border-radius: 6px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--accent-gold); }
+        
+        button { background-color: var(--accent-gold); color: #0c0c0d; border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:disabled { background-color: var(--text-gray); cursor: not-allowed; opacity: 0.6; }
+
+        .table-container { margin-top: 25px; overflow-x: auto; background-color: #0c0c0d; border-radius: 6px; border: 1px solid #222; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        th { padding: 14px; border-bottom: 2px solid #222; color: var(--text-gray); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+        td { padding: 14px; border-bottom: 1px solid #1a1a1c; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #111113; }
+        
+        .img-preview { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; }
+        .btn-edit { color: var(--accent-gold); border: none; background: none; cursor: pointer; font-size: 16px; margin-right: 15px; transition: 0.2s; }
+        .btn-delete { color: var(--text-gray); border: none; background: none; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn-edit:hover { transform: scale(1.1); }
+        .btn-delete:hover { color: var(--accent-red); transform: scale(1.1); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>NAVARA <span>Admin Panel</span></h1>
+            <h1>NAVARA <span>SOCIETY CONTROL</span></h1>
             <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Lihat Web Utama</a>
         </header>
 
-        <div class="admin-grid">
-            <div>
-                <div class="admin-card">
-                    <h2><i class="fa-solid fa-user-plus"></i> Tambah Anggota</h2>
-                    <form id="form-anggota">
-                        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="ang-nama" placeholder="CONTOH: GINA AGUSTINA" required></div>
-                        <div class="form-group"><label>NIM *</label><input type="text" id="ang-nim" placeholder="CONTOH: 300225008" required></div>
-                        
-                        <div class="form-group"><label>Username Instagram (Opsional)</label><input type="text" id="ang-ig" placeholder="Contoh: gina_agstn (Tanpa tanda @)"></div>
-                        <div class="form-group"><label>Nomor WhatsApp (Opsional)</label><input type="text" id="ang-wa" placeholder="Contoh: 08123456789"></div>
-                        <div class="form-group"><label>Link Profil LinkedIn (Opsional)</label><input type="text" id="ang-linkedin" placeholder="Contoh: https://linkedin.com/in/username"></div>
-                        <div class="form-group">
-                         <label>Foto Profil (Upload File)</label>
-                         <input type="file" id="ang-foto-upload" accept="image/*" style="width: 100%; padding: 10px; background: #0c0c0d; border: 1px solid #333; color: white; border-radius: 8px;">
-                </div>                        
-                        <div class="checkbox-group"><input type="checkbox" id="ang-highlight"><label for="ang-highlight" style="margin:0; cursor:pointer;">Aktifkan Border Emas (Highlight Spesifik)</label></div>
-                        <button type="submit">Simpan Anggota</button>
-                    </form>
-                </div>
-                <div class="admin-card">
-                    <h2><i class="fa-solid fa-users"></i> Daftar Anggota Kelas</h2>
-                    <div class="data-table-container">
-                        <table>
-                            <thead><tr><th>Nama</th><th>NIM</th><th style="text-align:center;">Aksi</th></tr></thead>
-                            <tbody id="list-anggota"></tbody>
-                        </table>
+        <div class="grid">
+            <div class="card">
+                <h2><i class="fa-solid fa-user-gear"></i> Kelola Anggota Kelas</h2>
+                <form id="form-anggota">
+                    <div class="form-group">
+                        <label for="ang-nama">Nama Lengkap</label>
+                        <input type="text" id="ang-nama" required placeholder="Contoh: ALEXANDER WILIAM">
                     </div>
+                    <div class="form-group">
+                        <label for="ang-nim">NIM</label>
+                        <input type="text" id="ang-nim" required placeholder="Contoh: 2401010021">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ang-ig">Username Instagram</label>
+                            <input type="text" id="ang-ig" placeholder="Tanpa @ (Contoh: alex_wlm)">
+                        </div>
+                        <div class="form-group">
+                            <label for="ang-wa">No. WhatsApp</label>
+                            <input type="text" id="ang-wa" placeholder="Contoh: 62812345678">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ang-linkedin">URL LinkedIn</label>
+                        <input type="url" id="ang-linkedin" placeholder="Contoh: https://linkedin.com/in/alex">
+                    </div>
+                    <div class="form-group">
+                        <label for="ang-foto">Foto Profil (Opsional)</label>
+                        <input type="file" id="ang-foto" accept="image/*">
+                    </div>
+                    <button type="submit">Simpan Anggota</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">Foto</th>
+                                <th>Nama</th>
+                                <th>NIM</th>
+                                <th style="text-align:center; width: 100px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-anggota">
+                            </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div>
-                <div class="admin-card">
-                    <h2><i class="fa-solid fa-calendar-plus"></i> Tambah Jadwal Kuliah</h2>
-                    <form id="form-jadwal">
+            <div class="card">
+                <h2><i class="fa-solid fa-calendar-days"></i> Tambah Jadwal Kuliah</h2>
+                <form id="form-jadwal">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label>Hari</label>
+                            <label for="jad-hari">Hari</label>
                             <select id="jad-hari" required>
-                                <option value="Senin">Senin</option><option value="Selasa">Selasa</option><option value="Rabu">Rabu</option><option value="Kamis">Kamis</option><option value="Jumat">Jumat</option>
+                                <option value="Senin">Senin</option>
+                                <option value="Selasa">Selasa</option>
+                                <option value="Rabu">Rabu</option>
+                                <option value="Kamis">Kamis</option>
+                                <option value="Jumat">Jumat</option>
+                                <option value="Sabtu">Sabtu</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>Waktu / Jam</label><input type="text" id="jad-waktu" placeholder="CONTOH: 08:00 - 10:30" required></div>
-                        <div class="form-group"><label>Nama Mata Kuliah</label><input type="text" id="jad-nama" placeholder="CONTOH: Statistika Bisnis" required></div>
-                        <div class="form-group"><label>Ruangan</label><input type="text" id="jad-ruang" placeholder="CONTOH: Ruang 3B Kampus 2" required></div>
-                        <button type="submit">Simpan Jadwal</button>
-                    </form>
-                </div>
-                <div class="admin-card">
-                    <h2><i class="fa-solid fa-calendar-days"></i> Daftar Jadwal</h2>
-                    <div class="data-table-container">
-                        <table>
-                            <thead><tr><th>Hari</th><th>Mata Kuliah</th><th>Waktu</th><th style="text-align:center;">Aksi</th></tr></thead>
-                            <tbody id="list-jadwal"></tbody>
-                        </table>
+                        <div class="form-group">
+                            <label for="jad-waktu">Waktu/Jam</label>
+                            <input type="text" id="jad-waktu" required placeholder="Contoh: 08:00 - 09:40">
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label for="jad-nama">Nama Mata Kuliah</label>
+                        <input type="text" id="jad-nama" required placeholder="Contoh: Pemrograman Web Dasar">
+                    </div>
+                    <div class="form-group">
+                        <label for="jad-ruang">Ruangan Kuliah</label>
+                        <input type="text" id="jad-ruang" required placeholder="Contoh: Ruang Lab Komputer 3 atau ONLINE">
+                    </div>
+                    <button type="submit">Simpan Jadwal</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Mata Kuliah & Ruang</th>
+                                <th>Waktu</th>
+                                <th style="text-align:center; width: 70px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-jadwal">
+                            </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -110,9 +168,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-        const storage = getStorage(app);
 
         const firebaseConfig = {
             apiKey: "AIzaSyABpQq2OuXJeXbu2uxLaecRGL8srH01foQ",
@@ -125,87 +182,146 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        // CRUD ANGGOTA
+        // State global untuk menampung link foto lama saat proses Edit Anggota dilakukan
+        let currentFotoUrl = "";
+
         const formAnggota = document.getElementById('form-anggota');
-       import { updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"; // Tambahkan ini di import
+        const btnSubmitAnggota = formAnggota.querySelector('button');
 
-formAnggota.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btnSubmit = formAnggota.querySelector('button');
-    const editId = btnSubmit.getAttribute('data-editing-id');
-    
-    // (Proses upload foto seperti kode sebelumnya tetap sama)
-    
-    if (editId) {
-        // Mode Update
-        await updateDoc(doc(db, "anggota", editId), {
-            nama: document.getElementById('ang-nama').value.toUpperCase(),
-            nim: document.getElementById('ang-nim').value,
-            instagram: document.getElementById('ang-ig').value,
-            whatsapp: document.getElementById('ang-wa').value,
-            linkedin: document.getElementById('ang-linkedin').value
+        // PROSES SUBMIT / SIMPAN DATA ANGGOTA (DENGAN UPLOAD FOTO KE STORAGE)
+        formAnggota.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const editId = btnSubmitAnggota.getAttribute('data-editing-id');
+            const fotoFile = document.getElementById('ang-foto').files[0];
+            let fotoUrl = currentFotoUrl; // Default menggunakan link foto lama (jika ada) atau kosong
+
+            btnSubmitAnggota.innerText = "Memproses Data...";
+            btnSubmitAnggota.disabled = true;
+
+            try {
+                // Jalankan upload file jika user memilih file foto baru
+                if (fotoFile) {
+                    const storageRef = ref(storage, 'anggota/' + Date.now() + '_' + fotoFile.name);
+                    const snapshot = await uploadBytes(storageRef, fotoFile);
+                    fotoUrl = await getDownloadURL(snapshot.ref);
+                }
+
+                const payloadAnggota = {
+                    nama: document.getElementById('ang-nama').value.toUpperCase(),
+                    nim: document.getElementById('ang-nim').value,
+                    instagram: document.getElementById('ang-ig').value,
+                    whatsapp: document.getElementById('ang-wa').value,
+                    linkedin: document.getElementById('ang-linkedin').value,
+                    foto: fotoUrl,
+                    updatedAt: Date.now()
+                };
+
+                if (editId) {
+                    // Eksekusi Update ke Dokumen Firebase yang Sudah Ada
+                    await updateDoc(doc(db, "anggota", editId), payloadAnggota);
+                    alert("Data Anggota berhasil diperbarui!");
+                    btnSubmitAnggota.removeAttribute('data-editing-id');
+                    btnSubmitAnggota.innerText = "Simpan Anggota";
+                } else {
+                    // Eksekusi Pembuatan Dokumen Anggota Baru
+                    payloadAnggota.createdAt = Date.now();
+                    await addDoc(collection(db, "anggota"), payloadAnggota);
+                    alert("Data Anggota berhasil ditambahkan!");
+                }
+
+                formAnggota.reset();
+                currentFotoUrl = "";
+                btnSubmitAnggota.disabled = false;
+                btnSubmitAnggota.innerText = "Simpan Anggota";
+                loadAnggota();
+
+            } catch (error) {
+                console.error("Gagal memproses form anggota: ", error);
+                alert("Terjadi kesalahan sistem: " + error.message);
+                btnSubmitAnggota.disabled = false;
+                btnSubmitAnggota.innerText = editId ? "Update Anggota" : "Simpan Anggota";
+            }
         });
-        alert("Data berhasil diupdate!");
-        btnSubmit.innerText = "Simpan Anggota";
-        btnSubmit.removeAttribute('data-editing-id');
-    } else {
-        // Mode Simpan Baru (seperti kode sebelumnya)
-        // ... (kode addDoc Anda)
-    }
-    formAnggota.reset();
-    loadAnggota();
-    loadJadwal();
-});
-        // ... (di dalam <script type="module">)
 
-async function loadAnggota() {
-    const tbody = document.getElementById('list-anggota');
-    tbody.innerHTML = '';
-    const q = query(collection(db, "anggota"), orderBy("createdAt", "desc"));
-    const querySnapshot = await getDocs(q);
-    
-    querySnapshot.forEach((res) => {
-        const data = res.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${data.nama}</td>
-            <td style="text-align:center;">
-                <button class="btn-edit" data-id="${res.id}" style="margin-right:10px; color:var(--accent-gold); border:none; background:none; cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button class="btn-delete" data-id="${res.id}" style="color:var(--text-gray); border:none; background:none; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-    
-    // Tambahkan event untuk tombol Edit
-    document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.onclick = async (e) => {
-            const id = btn.getAttribute('data-id');
-            const docRef = doc(db, "anggota", id);
-            const docSnap = await getDocs(query(collection(db, "anggota"))); // Cara sederhana ambil data
+        // AMBIL & CETAK DATA DAFTAR ANGGOTA KELAS
+        async function loadAnggota() {
+            const tbody = document.getElementById('list-anggota');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-gray);">Memuat data...</td></tr>';
             
-            // Logika isi form
-            const data = docSnap.docs.find(d => d.id === id).data();
-            document.getElementById('ang-nama').value = data.nama;
-            document.getElementById('ang-nim').value = data.nim;
-            document.getElementById('ang-ig').value = data.instagram || '';
-            document.getElementById('ang-wa').value = data.whatsapp || '';
-            document.getElementById('ang-linkedin').value = data.linkedin || '';
-            
-            // Ubah tombol submit menjadi Update
-            const btnSubmit = formAnggota.querySelector('button');
-            btnSubmit.innerText = "Update Anggota";
-            btnSubmit.setAttribute('data-editing-id', id);
-        };
-    });
-    attachDeleteEvents();
-}
+            try {
+                const q = query(collection(db, "anggota"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                tbody.innerHTML = '';
 
-        // CRUD JADWAL
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-gray);">Belum ada data anggota.</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((res) => {
+                    const data = res.data();
+                    const row = document.createElement('tr');
+                    
+                    // Gunakan gambar placeholder jika field foto kosong di Firestore
+                    const srcFoto = data.foto || "https://via.placeholder.com/150";
+
+                    row.innerHTML = `
+                        <td><img src="${srcFoto}" class="img-preview" alt="Foto"></td>
+                        <td><strong>${data.nama}</strong></td>
+                        <td>${data.nim}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-edit" data-id="${res.id}"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="btn-delete" data-collection="anggota" data-id="${res.id}"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Handler Event Click Tombol Edit Data Anggota
+                document.querySelectorAll('#list-anggota .btn-edit').forEach(btn => {
+                    btn.onclick = async () => {
+                        const id = btn.getAttribute('data-id');
+                        const snap = await getDocs(query(collection(db, "anggota")));
+                        const match = snap.docs.find(d => d.id === id);
+                        
+                        if (match) {
+                            const data = match.data();
+                            document.getElementById('ang-nama').value = data.nama;
+                            document.getElementById('ang-nim').value = data.nim;
+                            document.getElementById('ang-ig').value = data.instagram || '';
+                            document.getElementById('ang-wa').value = data.whatsapp || '';
+                            document.getElementById('ang-linkedin').value = data.linkedin || '';
+                            
+                            currentFotoUrl = data.foto || ""; // Menyimpan url foto lama jika file input tidak diubah
+                            btnSubmitAnggota.innerText = "Update Anggota";
+                            btnSubmitAnggota.setAttribute('data-editing-id', id);
+                            
+                            // Scroll halus ke arah form atas agar admin sadar sedang dalam mode edit
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    };
+                });
+
+                attachDeleteEvents();
+
+            } catch (error) {
+                console.error("Gagal memuat anggota: ", error);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--accent-red);">Gagal memuat data dari database.</td></tr>';
+            }
+        }
+
+        // PROSES SUBMIT / SIMPAN DATA JADWAL
         const formJadwal = document.getElementById('form-jadwal');
+        const btnSubmitJadwal = formJadwal.querySelector('button');
+
         formJadwal.addEventListener('submit', async (e) => {
             e.preventDefault();
+            btnSubmitJadwal.innerText = "Menyimpan...";
+            btnSubmitJadwal.disabled = true;
+
             try {
                 await addDoc(collection(db, "jadwal"), {
                     hari: document.getElementById('jad-hari').value,
@@ -214,44 +330,85 @@ async function loadAnggota() {
                     ruang: document.getElementById('jad-ruang').value,
                     createdAt: Date.now()
                 });
+
+                alert("Jadwal Kuliah berhasil ditambahkan!");
                 formJadwal.reset();
+                btnSubmitJadwal.innerText = "Simpan Jadwal";
+                btnSubmitJadwal.disabled = false;
                 loadJadwal();
-            } catch (error) { alert("Gagal menyimpan data: " + error); }
+
+            } catch (error) {
+                console.error("Gagal menyimpan jadwal: ", error);
+                alert("Gagal menambahkan jadwal baru: " + error.message);
+                btnSubmitJadwal.innerText = "Simpan Jadwal";
+                btnSubmitJadwal.disabled = false;
+            }
         });
 
+        // AMBIL & CETAK DATA JADWAL KULIAH
         async function loadJadwal() {
             const tbody = document.getElementById('list-jadwal');
-            tbody.innerHTML = '';
-            const q = query(collection(db, "jadwal"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((res) => {
-                const data = res.data();
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${data.hari}</strong></td>
-                    <td>${data.nama} <br><small style="color:var(--text-gray)">${data.ruang}</small></td>
-                    <td>${data.waktu}</td>
-                    <td style="text-align:center;"><button class="btn-delete" data-id="${res.id}"><i class="fa-solid fa-trash-can"></i></button></td>
-                `;
-                tbody.appendChild(row);
-            });
-            attachDeleteEvents();
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-gray);">Memuat data...</td></tr>';
+            
+            try {
+                const q = query(collection(db, "jadwal"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                tbody.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-gray);">Belum ada jadwal kuliah.</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((res) => {
+                    const data = res.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${data.hari}</strong></td>
+                        <td>${data.nama} <br><small style="color:var(--text-gray)">${data.ruang}</small></td>
+                        <td>${data.waktu}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-delete" data-collection="jadwal" data-id="${res.id}"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                attachDeleteEvents();
+
+            } catch (error) {
+                console.error("Gagal memuat jadwal: ", error);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--accent-red);">Gagal memuat data jadwal.</td></tr>';
+            }
         }
 
+        // FUNGSI GLOBAL PENGHAPUSAN DATA (BISA UNTUK TABEL ANGGOTA MAUPUN JADWAL)
         function attachDeleteEvents() {
             document.querySelectorAll('.btn-delete').forEach(btn => {
+                // Menghindari duplikasi penempelan event click
                 btn.onclick = async (e) => {
-                    if(confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+                    e.stopImmediatePropagation();
+                    
+                    if (confirm("Apakah Anda yakin ingin menghapus data ini secara permanen?")) {
                         const id = btn.getAttribute('data-id');
-                        const collectionName = btn.closest('table').id === 'list-anggota' || btn.closest('tbody').id === 'list-anggota' ? 'anggota' : 'jadwal';
-                        await deleteDoc(doc(db, collectionName, id));
-                        loadAnggota();
-                        loadJadwal();
+                        const collectionName = btn.getAttribute('data-collection');
+                        
+                        try {
+                            await deleteDoc(doc(db, collectionName, id));
+                            alert("Data berhasil dihapus!");
+                            
+                            // Segarkan ulang masing-masing tabel berdasarkan data yang dihapus
+                            if (collectionName === 'anggota') loadAnggota();
+                            if (collectionName === 'jadwal') loadJadwal();
+                        } catch (err) {
+                            alert("Gagal menghapus data dari server: " + err.message);
+                        }
                     }
                 };
             });
         }
 
+        // Jalankan pemanggilan data pertama kali saat dashboard admin dibuka
         loadAnggota();
         loadJadwal();
     </script>
