@@ -20,7 +20,12 @@
                     <span style="color: #ffffff; font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; line-height: 1;">NAVARA</span>
                 </a>
             </div>
-            <ul class="nav-links">
+            
+            <div class="menu-toggle" id="menu-icon" style="display: none; font-size: 1.5rem; color: #ffffff; cursor: pointer;">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+            
+            <ul class="nav-links" id="nav-menu">
                 <li><a href="#profil" class="nav-item">Beranda</a></li>
                 <li><a href="#anggota" class="nav-item">Anggota Kelas</a></li>
                 <li><a href="#jadwal" class="nav-item">Jadwal Kuliah</a></li>
@@ -52,7 +57,10 @@
                 </div>
                 <div class="profil-image reveal-up" style="transition-delay: 0.2s;">
                     <div class="image-wrapper">
-                        <img src="WhatsApp Image 2026-06-21 at 15.37.31.jpeg" alt="Foto Anggota Kelas NAVARA" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000'">
+                        <!-- Kontainer Slider Foto Otomatis Dinamis Admin -->
+                        <div class="profile-slider" id="profile-slider-container">
+                            <div class="slider-placeholder">Memuat galeri kelas...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,6 +145,23 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        const menuIcon = document.getElementById('menu-icon');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (menuIcon && navMenu) {
+            menuIcon.onclick = () => {
+                navMenu.classList.toggle('active');
+            };
+
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.onclick = () => {
+                    navMenu.classList.remove('active');
+                };
+            });
+        }
+    </script>
 
     <script type="module" src="app.js"></script>
 </body>

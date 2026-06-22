@@ -39,6 +39,13 @@
         .btn-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; transition: 0.3s; font-size: 1rem; }
         .btn-delete:hover { color: var(--accent-red); }
         .highlight-tag { background-color: rgba(199, 165, 66, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-top: 5px; display: inline-block;}
+        
+        /* Tambahan Style untuk Grid Galeri Foto */
+        .gallery-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 15px; }
+        .gallery-item { position: relative; width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item .btn-del-photo { position: absolute; top: 5px; right: 5px; background: rgba(218, 68, 68, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
+        .gallery-item .btn-del-photo:hover { background: var(--accent-red); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -48,6 +55,25 @@
             <h1>NAVARA <span>Admin Panel</span></h1>
             <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Lihat Web Utama</a>
         </header>
+
+        <div class="admin-card" style="margin-bottom: 40px;">
+            <h2><i class="fa-solid fa-images"></i> Kelola Foto Profil Kelas (Slider Gallery Tanpa Batas)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px;">
+                <form id="form-galeri">
+                    <div class="form-group">
+                        <label>Pilih Gambar Kelas Baru</label>
+                        <input type="file" id="gal-foto-upload" accept="image/*" style="width: 100%; padding: 12px; background: #0c0c0d; border: 1px solid #333; color: white; border-radius: 8px;" required>
+                    </div>
+                    <button type="submit" id="btn-submit-galeri">Unggah & Tambah ke Slider</button>
+                </form>
+                <div>
+                    <label>Daftar Gambar Aktif di Website</label>
+                    <div class="gallery-preview-grid" id="list-galeri-foto">
+                        <span style="color: var(--text-gray); font-size: 0.85rem; font-style: italic;">Memuat galeri...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="admin-grid">
             <div>
@@ -130,7 +156,7 @@
         const db = getFirestore(app);
 
         // --- FUNGSI SIHIR: KOMPRESI GAMBAR DI SISI BROWSER ---
-        function kompresFotoKeBase64(file) {
+        function kompresFotoKeBase64(file, maxDimensi = 400) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -142,17 +168,15 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // Batasi resolusi maksimal lebar/tinggi 400px (Sangat pas untuk ukuran avatar/foto profil)
-                        const MAX_DIMENSI = 400;
                         if (width > height) {
-                            if (width > MAX_DIMENSI) {
-                                height *= MAX_DIMENSI / width;
-                                width = MAX_DIMENSI;
+                            if (width > maxDimensi) {
+                                height *= maxDimensi / width;
+                                width = maxDimensi;
                             }
                         } else {
-                            if (height > MAX_DIMENSI) {
-                                width *= MAX_DIMENSI / height;
-                                height = MAX_DIMENSI;
+                            if (height > maxDimensi) {
+                                width *= maxDimensi / height;
+                                height = maxDimensi;
                             }
                         }
 
@@ -161,7 +185,6 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Kompres kualitas gambar menjadi 60% format JPEG (Ukuran file turun drastis jadi ~30KB - 70KB)
                         const hasilBase64 = canvas.toDataURL('image/jpeg', 0.6);
                         resolve(hasilBase64);
                     };
@@ -170,6 +193,88 @@
                 reader.onerror = err => reject(err);
             });
         }
+
+        // ==========================================================================
+        // FITUR BARU: ENGINE MANAGEMENT GALERI FOTO KELAS
+        // ==========================================================================
+        const formGaleri = document.getElementById('form-galeri');
+        const btnSubmitGaleri = document.getElementById('btn-submit-galeri');
+
+        formGaleri.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fotoFile = document.getElementById('gal-foto-upload').files[0];
+            if(!fotoFile) return;
+
+            btnSubmitGaleri.innerText = "Mengompres & Mengunggah...";
+            btnSubmitGaleri.disabled = true;
+
+            try {
+                // Di-kompres dengan dimensi max 800px agar kualitas slider tetap tajam di layar desktop/hp
+                const fotoBase64 = await kompresFotoKeBase64(fotoFile, 800);
+
+                await addDoc(collection(db, "profil_fotos"), {
+                    fotoUrl: fotoBase64,
+                    createdAt: Date.now()
+                });
+
+                alert("Foto baru berhasil ditambahkan ke slider utama!");
+                formGaleri.reset();
+                loadGaleriFoto();
+            } catch(error) {
+                console.error(error);
+                alert("Gagal mengunggah foto galeri: " + error.message);
+            } finally {
+                btnSubmitGaleri.innerText = "Unggah & Tambah ke Slider";
+                btnSubmitGaleri.disabled = false;
+            }
+        });
+
+        async function loadGaleriFoto() {
+            const containerGaleri = document.getElementById('list-galeri-foto');
+            containerGaleri.innerHTML = '<span style="color:var(--text-gray); font-size:0.85rem;">Memuat galeri...</span>';
+            
+            try {
+                const q = query(collection(db, "profil_fotos"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                containerGaleri.innerHTML = '';
+
+                let hasData = false;
+                querySnapshot.forEach((res) => {
+                    hasData = true;
+                    const data = res.data();
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'gallery-item';
+                    itemDiv.innerHTML = `
+                        <img src="${data.fotoUrl}" alt="Foto Navara">
+                        <button class="btn-del-photo" data-id="${res.id}"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                    containerGaleri.appendChild(itemDiv);
+                });
+
+                if(!hasData) {
+                    containerGaleri.innerHTML = '<span style="color:var(--text-gray); font-size:0.85rem; font-style:italic;">Belum ada foto.</span>';
+                }
+
+                // Attach Event Hapus Foto Galeri
+                document.querySelectorAll('.btn-del-photo').forEach(btn => {
+                    btn.onclick = async () => {
+                        if(confirm("Hapus foto ini dari perputaran slider utama?")) {
+                            const id = btn.getAttribute('data-id');
+                            try {
+                                await deleteDoc(doc(db, "profil_fotos", id));
+                                loadGaleriFoto();
+                            } catch(err) {
+                                alert("Gagal menghapus foto: " + err.message);
+                            }
+                        }
+                    };
+                });
+
+            } catch(error) {
+                containerGaleri.innerHTML = '<span style="color:var(--accent-red); font-size:0.85rem;">Gagal memuat galeri.</span>';
+            }
+        }
+
 
         // --- SISTEM CRUD ANGGOTA ---
         const formAnggota = document.getElementById('form-anggota');
@@ -186,9 +291,8 @@
             btnSubmitAnggota.disabled = true;
 
             try {
-                // Jika user memilih file foto baru, kompres secara otomatis
                 if (fotoFile) {
-                    finalFotoUrl = await kompresFotoKeBase64(fotoFile);
+                    finalFotoUrl = await kompresFotoKeBase64(fotoFile, 400);
                 } else if (!editId && !fotoFile) {
                     finalFotoUrl = "https://via.placeholder.com/150"; 
                 }
@@ -358,6 +462,8 @@
             });
         }
 
+        // Jalankan semua loader saat halaman dibuka
+        loadGaleriFoto();
         loadAnggota();
         loadJadwal();
     </script>

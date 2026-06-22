@@ -46,7 +46,7 @@ async function renderWebUtama() {
                 
                 const linkedinHtml = mhs.linkedin ? `<a href="${mhs.linkedin}" target="_blank" class="member-social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>` : '';
                 
-                // Logika Pemrosesan Foto Profil Opsional (Menggunakan UI-Avatars premium jika kosong)
+                // Logika Pemrosesan Foto Profil Opsional
                 const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(mhs.nama)}&background=1c1c1c&color=c7a542&bold=true&size=128`;
                 const fotoFinal = mhs.fotoUrl || defaultAvatar;
 
@@ -58,7 +58,7 @@ async function renderWebUtama() {
                         <div class="member-detail-box">
                             <div class="member-name">${mhs.nama}</div>
                             <div class="member-nim">NIM: ${mhs.nim}</div>
-                            <div class="badge">Active Student</div>
+                            <div style="color: var(--text-gray); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;">Active Student</div>
                             <div class="member-card-socials">
                                 ${igHtml} ${waHtml} ${linkedinHtml}
                             </div>
@@ -132,7 +132,53 @@ async function renderWebUtama() {
         } catch (err) { console.error("Error load jadwal: ", err); }
     }
 
+    // 3. LOGIKA TAMBAHAN: SLIDER FOTO PROFIL DINAMIS TANPA BATAS (DARI ADMIN)
+    const containerSlider = document.getElementById('profile-slider-container');
+    if (containerSlider) {
+        try {
+            const qFotos = query(collection(db, "profil_fotos"), orderBy("createdAt", "asc"));
+            const querySnapshot = await getDocs(qFotos);
+            
+            let htmlFotos = '';
+            let hasData = false;
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                htmlFotos += `<img src="${data.fotoUrl}" alt="Foto Galeri Navara" class="slider-img">`;
+                hasData = true;
+            });
+
+            if (hasData) {
+                containerSlider.innerHTML = htmlFotos;
+                startProfileSlider();
+            } else {
+                // Gambar fallback default jika database masih kosong kosong
+                containerSlider.innerHTML = `<img src="WhatsApp Image 2026-06-21 at 15.37.31.jpeg" alt="Foto Default Navara" class="slider-img slide-active">`;
+            }
+        } catch (err) {
+            console.error("Gagal memuat galeri foto profil: ", err);
+        }
+    }
+
     initScrollObserver();
+}
+
+// Generator pergerakan interval perlahan gambar galeri (Fade premium)
+function startProfileSlider() {
+    const slides = document.querySelectorAll('.slider-img');
+    if (slides.length <= 1) {
+        if (slides[0]) slides[0].classList.add('slide-active');
+        return; 
+    }
+
+    let currentSlide = 0;
+    slides[currentSlide].classList.add('slide-active');
+
+    setInterval(() => {
+        slides[currentSlide].classList.remove('slide-active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('slide-active');
+    }, 4500); // Berganti perlahan secara otomatis setiap 4.5 detik
 }
 
 renderWebUtama();
