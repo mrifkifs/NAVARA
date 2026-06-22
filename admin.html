@@ -62,7 +62,7 @@
                         <div class="form-group"><label>Link Profil LinkedIn (Opsional)</label><input type="text" id="ang-linkedin" placeholder="Contoh: https://linkedin.com/in/username"></div>
                         
                         <div class="form-group">
-                            <label>Foto Profil (Upload File)</label>
+                            <label>Foto Profil (Maks 5MB - Otomatis Dikompres)</label>
                             <input type="file" id="ang-foto-upload" accept="image/*" style="width: 100%; padding: 10px; background: #0c0c0d; border: 1px solid #333; color: white; border-radius: 8px;">
                         </div>                        
                         <div class="checkbox-group">
@@ -114,16 +114,14 @@
     </div>
 
     <script type="module">
-        // 1. IMPORT DARI FIREBASE (Hanya Firestore yang dibutuhkan)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // 2. INISIALISASI FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyABpQq2OuXJeXbu2uxLaecRGL8srH01foQ",
             authDomain: "navara-8ac77.firebaseapp.com",
             projectId: "navara-8ac77",
-            storageBucket: "navara-8ac77.firebasestorage.app",
+            storageBucket: "navara-8ac77.appspot.com",
             messagingSenderId: "35453814512",
             appId: "1:35453814512:web:cb94f20d324fa0f9e36435"
         };
@@ -131,20 +129,52 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- FUNGSI RAHASIA MENGUBAH FOTO JADI TEKS ---
-        function konversiKeBase64(file) {
+        // --- FUNGSI SIHIR: KOMPRESI GAMBAR DI SISI BROWSER ---
+        function kompresFotoKeBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Batasi resolusi maksimal lebar/tinggi 400px (Sangat pas untuk ukuran avatar/foto profil)
+                        const MAX_DIMENSI = 400;
+                        if (width > height) {
+                            if (width > MAX_DIMENSI) {
+                                height *= MAX_DIMENSI / width;
+                                width = MAX_DIMENSI;
+                            }
+                        } else {
+                            if (height > MAX_DIMENSI) {
+                                width *= MAX_DIMENSI / height;
+                                height = MAX_DIMENSI;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Kompres kualitas gambar menjadi 60% format JPEG (Ukuran file turun drastis jadi ~30KB - 70KB)
+                        const hasilBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                        resolve(hasilBase64);
+                    };
+                    img.onerror = err => reject(err);
+                };
+                reader.onerror = err => reject(err);
             });
         }
 
         // --- SISTEM CRUD ANGGOTA ---
         const formAnggota = document.getElementById('form-anggota');
         const btnSubmitAnggota = formAnggota.querySelector('button');
-        let currentFotoUrl = ""; // Penampung link foto lama saat proses edit
+        let currentFotoUrl = ""; 
 
         formAnggota.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -152,44 +182,38 @@
             const fotoFile = document.getElementById('ang-foto-upload').files[0];
             let finalFotoUrl = currentFotoUrl;
 
-            // Kunci tombol agar tidak diklik dua kali
-            btnSubmitAnggota.innerText = "Memproses Data...";
+            btnSubmitAnggota.innerText = "Sedang Mengompres & Menyimpan...";
             btnSubmitAnggota.disabled = true;
 
             try {
-                // Jika user mengupload foto, langsung ubah jadi Base64
+                // Jika user memilih file foto baru, kompres secara otomatis
                 if (fotoFile) {
-                    finalFotoUrl = await konversiKeBase64(fotoFile);
+                    finalFotoUrl = await kompresFotoKeBase64(fotoFile);
                 } else if (!editId && !fotoFile) {
-                    // Jika tidak ada foto baru dan bukan edit, beri foto kosong bawaan
                     finalFotoUrl = "https://via.placeholder.com/150"; 
                 }
 
-                // Siapkan data untuk dilempar ke database
                 const payloadAnggota = {
                     nama: document.getElementById('ang-nama').value.toUpperCase(),
                     nim: document.getElementById('ang-nim').value,
                     instagram: document.getElementById('ang-ig').value,
                     whatsapp: document.getElementById('ang-wa').value,
                     linkedin: document.getElementById('ang-linkedin').value,
-                    fotoUrl: finalFotoUrl,
+                    fotoUrl: finalFotoUrl, 
                     isHighlighted: document.getElementById('ang-highlight').checked,
                     updatedAt: Date.now()
                 };
 
                 if (editId) {
-                    // Eksekusi Update
                     await updateDoc(doc(db, "anggota", editId), payloadAnggota);
                     alert("Data Anggota berhasil diperbarui!");
                     btnSubmitAnggota.removeAttribute('data-editing-id');
                 } else {
-                    // Eksekusi Tambah Baru
                     payloadAnggota.createdAt = Date.now();
                     await addDoc(collection(db, "anggota"), payloadAnggota);
                     alert("Data Anggota berhasil ditambahkan!");
                 }
 
-                // Kembalikan form ke keadaan semula
                 formAnggota.reset();
                 currentFotoUrl = "";
                 btnSubmitAnggota.innerText = "Simpan Anggota";
@@ -197,8 +221,8 @@
                 loadAnggota();
 
             } catch (error) {
-                console.error("Gagal memproses form anggota: ", error);
-                alert("Gagal memproses data!\n\nDetail Error: " + error.message);
+                console.error(error);
+                alert("Gagal menyimpan data: " + error.message);
                 btnSubmitAnggota.innerText = editId ? "Update Anggota" : "Simpan Anggota";
                 btnSubmitAnggota.disabled = false;
             }
@@ -229,7 +253,6 @@
                     tbody.appendChild(row);
                 });
 
-                // Handler tombol Edit
                 document.querySelectorAll('#list-anggota .btn-edit').forEach(btn => {
                     btn.onclick = async () => {
                         const id = btn.getAttribute('data-id');
@@ -315,7 +338,6 @@
             }
         }
 
-        // --- SISTEM HAPUS DATA GLOBAL ---
         function attachDeleteEvents() {
             document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.onclick = async (e) => {
@@ -336,7 +358,6 @@
             });
         }
 
-        // Load data saat halaman pertama kali dibuka
         loadAnggota();
         loadJadwal();
     </script>
